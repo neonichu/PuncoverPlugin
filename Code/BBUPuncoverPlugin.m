@@ -8,6 +8,7 @@
 
 #import <objc/runtime.h>
 
+#import "BBUFunctionStatistics.h"
 #import "BBUPuncoverPlugin.h"
 
 static BBUPuncoverPlugin *sharedPlugin;
@@ -30,13 +31,25 @@ static BBUPuncoverPlugin *sharedPlugin;
         dispatch_once(&onceToken, ^{
             sharedPlugin = [[self alloc] initWithBundle:plugin];
 
-            Class aClass = NSClassFromString(@"DVTTextSidebarView");
+            __block Class aClass = NSClassFromString(@"DVTTextSidebarView");
             [self swizzleClass:aClass
                       exchange:@selector(_drawLineNumbersInSidebarRect:foldedIndexes:count:linesToInvert:linesToReplace:getParaRectBlock:)
                           with:@selector(puncover_drawLineNumbersInSidebarRect:foldedIndexes:count:linesToInvert:linesToReplace:getParaRectBlock:)];
             [self swizzleClass:aClass
                       exchange:@selector(sidebarWidth)
                           with:@selector(puncover_sidebarWidth)];
+
+#if 0
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                for (NSWindowController* controller in [objc_getClass("IDEWorkspaceWindowController") performSelector:@selector(workspaceWindowControllers)]) {
+                    id tabController = [controller performSelector:@selector(activeWorkspaceTabController)];
+                    [tabController performSelector:@selector(showUtilities)];
+                    //[tabController performSelector:@selector(addAssistantEditor:) withObject:nil];
+                    //[tabController performSelector:@selector(changeToAssistantLayout_BH:) withObject:nil];
+                    [tabController performSelector:@selector(assistantEditorsLayout)];
+                }
+            });
+#endif
         });
     }
 }
@@ -68,6 +81,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 @interface NSRulerView (Puncover)
 
+@property(nonatomic, readonly) NSURL* currentDocumentURL;
 @property(retain, nonatomic) NSFont *lineNumberFont;
 @property(copy, nonatomic) NSColor *lineNumberTextColor;
 
@@ -84,6 +98,19 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 #pragma mark -
 
+- (void)puncover_drawString:(NSString*)string atLine:(NSUInteger)lineNumber {
+    NSRect a0, a1;
+    [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:lineNumber];
+
+    NSDictionary* attributes = @{ NSFontAttributeName: self.lineNumberFont,
+                                  NSForegroundColorAttributeName: self.lineNumberTextColor };
+    NSAttributedString * currentText = [[NSAttributedString alloc] initWithString:string
+                                                                       attributes:attributes];
+
+    a0.origin.y -= 1.0;
+    [currentText drawAtPoint:a0.origin];
+}
+
 - (void)puncover_drawLineNumbersInSidebarRect:(CGRect)rect
                                foldedIndexes:(NSUInteger *)indexes
                                        count:(NSUInteger)indexCount
@@ -91,13 +118,17 @@ static BBUPuncoverPlugin *sharedPlugin;
                               linesToReplace:(id)a4
                             getParaRectBlock:rectBlock
 {
-    CGRect a0, a1;
-    [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:20];
+    NSString* path = self.currentDocumentURL.path;
+    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path];
 
-    NSDictionary* attributes = @{ NSFontAttributeName: self.lineNumberFont,
-                                  NSForegroundColorAttributeName: self.lineNumberTextColor };
-    NSAttributedString * currentText =[[NSAttributedString alloc] initWithString:@"Cat" attributes: attributes];
-    [currentText drawAtPoint:a0.origin];
+    for (BBUFunctionStatistics* stat in stats) {
+        NSString* string = [NSString stringWithFormat:@"func %lu",
+                            (unsigned long)stat.functionSize];
+        [self puncover_drawString:string atLine:stat.lineNumber];
+
+        string = [NSString stringWithFormat:@"stack %lu", (unsigned long)stat.stackSize];
+        [self puncover_drawString:string atLine:stat.lineNumber + 1];
+    }
 
     [self puncover_drawLineNumbersInSidebarRect:rect
                                  foldedIndexes:indexes
@@ -109,6 +140,29 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 - (double)puncover_sidebarWidth {
     return 80.0;
+}
+
+- (NSURL*)currentDocumentURL {
+    id workspaceWindowController = [self keyWorkspaceWindowController];
+    NSAssert(workspaceWindowController, @"No open window found.");
+
+    id editorArea = [workspaceWindowController performSelector:@selector(editorArea)];
+    id document = [editorArea performSelector:@selector(primaryEditorDocument)];
+
+    return [document fileURL];
+}
+
+- (id)keyWorkspaceWindowController {
+    NSArray* workspaceWindowControllers = [objc_getClass("IDEWorkspaceWindowController")
+                                           performSelector:@selector(workspaceWindowControllers)];
+
+    for (NSWindowController* controller in workspaceWindowControllers) {
+        if ([controller.window isKeyWindow]) {
+            return controller;
+        }
+    }
+
+    return workspaceWindowControllers[0];
 }
 
 @end
