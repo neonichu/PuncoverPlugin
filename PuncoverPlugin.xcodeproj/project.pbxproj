@@ -1,0 +1,284 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1C8AF0519BB7A770079B96A /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C8AF0419BB7A770079B96A /* AppKit.framework */; };
+		A1C8AF0719BB7A770079B96A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C8AF0619BB7A770079B96A /* Foundation.framework */; };
+		A1C8AF1019BB7A770079B96A /* BBUPuncoverPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C8AF0F19BB7A770079B96A /* BBUPuncoverPlugin.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A1C8AF0119BB7A770079B96A /* PuncoverPlugin.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuncoverPlugin.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1C8AF0419BB7A770079B96A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		A1C8AF0619BB7A770079B96A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A1C8AF0A19BB7A770079B96A /* PuncoverPlugin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PuncoverPlugin-Info.plist"; sourceTree = "<group>"; };
+		A1C8AF0E19BB7A770079B96A /* BBUPuncoverPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBUPuncoverPlugin.h; sourceTree = "<group>"; };
+		A1C8AF0F19BB7A770079B96A /* BBUPuncoverPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBUPuncoverPlugin.m; sourceTree = "<group>"; };
+		A1C8AF1119BB7A770079B96A /* PuncoverPlugin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PuncoverPlugin-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1C8AEFE19BB7A760079B96A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1C8AF0519BB7A770079B96A /* AppKit.framework in Frameworks */,
+				A1C8AF0719BB7A770079B96A /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1C8AEF819BB7A760079B96A = {
+			isa = PBXGroup;
+			children = (
+				A1C8AF0819BB7A770079B96A /* Code */,
+				A1C8AF0319BB7A770079B96A /* Frameworks */,
+				A1C8AF0219BB7A770079B96A /* Products */,
+				A1C8AF0919BB7A770079B96A /* Supporting Files */,
+			);
+			sourceTree = "<group>";
+		};
+		A1C8AF0219BB7A770079B96A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1C8AF0119BB7A770079B96A /* PuncoverPlugin.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1C8AF0319BB7A770079B96A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A1C8AF0419BB7A770079B96A /* AppKit.framework */,
+				A1C8AF0619BB7A770079B96A /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1C8AF0819BB7A770079B96A /* Code */ = {
+			isa = PBXGroup;
+			children = (
+				A1C8AF0E19BB7A770079B96A /* BBUPuncoverPlugin.h */,
+				A1C8AF0F19BB7A770079B96A /* BBUPuncoverPlugin.m */,
+			);
+			path = Code;
+			sourceTree = "<group>";
+		};
+		A1C8AF0919BB7A770079B96A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A1C8AF0A19BB7A770079B96A /* PuncoverPlugin-Info.plist */,
+				A1C8AF1119BB7A770079B96A /* PuncoverPlugin-Prefix.pch */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1C8AF0019BB7A760079B96A /* PuncoverPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1C8AF1419BB7A770079B96A /* Build configuration list for PBXNativeTarget "PuncoverPlugin" */;
+			buildPhases = (
+				A1C8AEFD19BB7A760079B96A /* Sources */,
+				A1C8AEFE19BB7A760079B96A /* Frameworks */,
+				A1C8AEFF19BB7A760079B96A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PuncoverPlugin;
+			productName = PuncoverPlugin;
+			productReference = A1C8AF0119BB7A770079B96A /* PuncoverPlugin.xcplugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1C8AEF919BB7A760079B96A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = BBU;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Boris Bügling";
+			};
+			buildConfigurationList = A1C8AEFC19BB7A760079B96A /* Build configuration list for PBXProject "PuncoverPlugin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A1C8AEF819BB7A760079B96A;
+			productRefGroup = A1C8AF0219BB7A770079B96A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1C8AF0019BB7A760079B96A /* PuncoverPlugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1C8AEFF19BB7A760079B96A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1C8AEFD19BB7A760079B96A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1C8AF1019BB7A770079B96A /* BBUPuncoverPlugin.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1C8AF1219BB7A770079B96A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wno-incomplete-implementation",
+					"-Wno-undeclared-selector",
+				);
+			};
+			name = Debug;
+		};
+		A1C8AF1319BB7A770079B96A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wno-incomplete-implementation",
+					"-Wno-undeclared-selector",
+				);
+			};
+			name = Release;
+		};
+		A1C8AF1519BB7A770079B96A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Supporting Files/PuncoverPlugin-Prefix.pch";
+				INFOPLIST_FILE = "Supporting Files/PuncoverPlugin-Info.plist";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Debug;
+		};
+		A1C8AF1619BB7A770079B96A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Supporting Files/PuncoverPlugin-Prefix.pch";
+				INFOPLIST_FILE = "Supporting Files/PuncoverPlugin-Info.plist";
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1C8AEFC19BB7A760079B96A /* Build configuration list for PBXProject "PuncoverPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1C8AF1219BB7A770079B96A /* Debug */,
+				A1C8AF1319BB7A770079B96A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1C8AF1419BB7A770079B96A /* Build configuration list for PBXNativeTarget "PuncoverPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1C8AF1519BB7A770079B96A /* Debug */,
+				A1C8AF1619BB7A770079B96A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1C8AEF919BB7A760079B96A /* Project object */;
+}
