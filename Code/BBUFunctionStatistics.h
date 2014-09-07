@@ -10,11 +10,14 @@
 
 @interface BBUFunctionStatistics : NSObject
 
-@property (nonatomic, readonly) NSUInteger functionSize;
 @property (nonatomic, readonly) NSUInteger lineNumber;
-@property (nonatomic, readonly) NSUInteger stackSize;
+@property (nonatomic, readonly) NSString* longText;
+@property (nonatomic, readonly) NSString* shortText;
 @property (nonatomic, readonly) NSURL* url;
 
-+(NSArray*)functionStatisticsForFileAtPath:(NSString*)path;
++(NSArray*)functionStatisticsForFileAtPath:(NSString*)path
+                        forWorkspaceAtPath:(NSString*)workspacePath;
++(NSString*)widestShortTextForFileAtPath:(NSString*)path
+                      forWorkspaceAtPath:(NSString*)workspacePath;
 
 @end

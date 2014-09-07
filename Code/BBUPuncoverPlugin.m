@@ -98,15 +98,23 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 #pragma mark -
 
+- (NSAttributedString*)puncover_attributedStringFromString:(NSString*)string {
+    if (!self.lineNumberFont || !self.lineNumberTextColor) {
+        return nil;
+    }
+
+    NSDictionary* attributes = @{ NSFontAttributeName: self.lineNumberFont,
+                                  NSForegroundColorAttributeName: self.lineNumberTextColor };
+    return [[NSAttributedString alloc] initWithString:string attributes:attributes];
+}
+
 - (void)puncover_drawString:(NSString*)string atLine:(NSUInteger)lineNumber {
     NSRect a0, a1;
     [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:lineNumber];
 
-    NSDictionary* attributes = @{ NSFontAttributeName: self.lineNumberFont,
-                                  NSForegroundColorAttributeName: self.lineNumberTextColor };
-    NSAttributedString * currentText = [[NSAttributedString alloc] initWithString:string
-                                                                       attributes:attributes];
+    NSAttributedString* currentText = [self puncover_attributedStringFromString:string];
 
+    a0.origin.x += 8.0;
     a0.origin.y -= 1.0;
     [currentText drawAtPoint:a0.origin];
 }
@@ -119,15 +127,14 @@ static BBUPuncoverPlugin *sharedPlugin;
                             getParaRectBlock:rectBlock
 {
     NSString* path = self.currentDocumentURL.path;
-    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path];
+    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path
+                                                         forWorkspaceAtPath:[self workspacePath]];
 
     for (BBUFunctionStatistics* stat in stats) {
-        NSString* string = [NSString stringWithFormat:@"func %lu",
-                            (unsigned long)stat.functionSize];
-        [self puncover_drawString:string atLine:stat.lineNumber];
-
-        string = [NSString stringWithFormat:@"stack %lu", (unsigned long)stat.stackSize];
-        [self puncover_drawString:string atLine:stat.lineNumber + 1];
+        NSUInteger lineNumber = stat.lineNumber;
+        for (NSString* line in [stat.shortText componentsSeparatedByString:@"\n"]) {
+            [self puncover_drawString:line atLine:lineNumber++];
+        }
     }
 
     [self puncover_drawLineNumbersInSidebarRect:rect
@@ -139,7 +146,11 @@ static BBUPuncoverPlugin *sharedPlugin;
 }
 
 - (double)puncover_sidebarWidth {
-    return 80.0;
+    double originalWidth = [self puncover_sidebarWidth];
+
+    NSAttributedString* widestAttributedString = [self puncover_attributedStringFromString:[BBUFunctionStatistics widestShortTextForFileAtPath:self.currentDocumentURL.path forWorkspaceAtPath:[self workspacePath]]];
+
+    return MIN(100.0, [widestAttributedString size].width + originalWidth);
 }
 
 - (NSURL*)currentDocumentURL {
@@ -150,6 +161,14 @@ static BBUPuncoverPlugin *sharedPlugin;
     id document = [editorArea performSelector:@selector(primaryEditorDocument)];
 
     return [document fileURL];
+}
+
+-(NSString*)workspacePath {
+    id workspaceWindowController = [self keyWorkspaceWindowController];
+    id workspace = [workspaceWindowController valueForKey:@"_workspace"];
+
+    NSString* path = [[workspace valueForKey:@"representingFilePath"] valueForKey:@"_pathString"];
+    return [path stringByDeletingLastPathComponent];
 }
 
 - (id)keyWorkspaceWindowController {

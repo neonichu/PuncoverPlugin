@@ -10,9 +10,9 @@
 
 @interface BBUFunctionStatistics ()
 
-@property (nonatomic) NSUInteger functionSize;
 @property (nonatomic) NSUInteger lineNumber;
-@property (nonatomic) NSUInteger stackSize;
+@property (nonatomic) NSString* longText;
+@property (nonatomic) NSString* shortText;
 @property (nonatomic) NSURL* url;
 
 @end
@@ -21,22 +21,28 @@
 
 @implementation BBUFunctionStatistics
 
-+(NSArray*)functionStatisticsForFileAtPath:(NSString*)path {
-    static dispatch_once_t onceToken;
-    static NSDictionary* fileStatistics = nil;
-    dispatch_once(&onceToken, ^{
-        NSString* filePath = [[NSBundle bundleForClass:self.class] pathForResource:@"test" ofType:@"json"];
-        NSData* JSONData = [NSData dataWithContentsOfFile:filePath];
-        fileStatistics = [NSJSONSerialization JSONObjectWithData:JSONData
-                                                         options:0
-                                                           error:nil];
-    });
++(NSDictionary*)fileStatisticsForWorkspaceAtPath:(NSString*)workspacePath {
+    NSString* filePath = [workspacePath stringByAppendingPathComponent:@".gutter.json"];
+    NSData* JSONData = [NSData dataWithContentsOfFile:filePath];
 
-    if (!path) {
+    if (!JSONData) {
         return nil;
     }
 
-    NSArray* fileStatistic = fileStatistics[path];
+    return [NSJSONSerialization JSONObjectWithData:JSONData options:0 error:nil];
+}
+
++(NSArray*)functionStatisticsForFileAtPath:(NSString*)path
+                        forWorkspaceAtPath:(NSString*)workspacePath {
+    if (!path || !workspacePath) {
+        return nil;
+    }
+
+    path = [path stringByReplacingOccurrencesOfString:workspacePath withString:@""];
+    path = [path substringFromIndex:1];
+
+    NSDictionary* fileStatistics = [self fileStatisticsForWorkspaceAtPath:workspacePath];
+    NSArray* fileStatistic = fileStatistics[@"symbols_by_file"][path];
     NSMutableArray* result = [@[] mutableCopy];
 
     for (NSDictionary* functionStatistic in fileStatistic) {
@@ -46,14 +52,29 @@
     return result;
 }
 
++(NSString*)widestShortTextForFileAtPath:(NSString*)path
+                      forWorkspaceAtPath:(NSString*)workspacePath {
+    NSArray* functionStatistics = [self functionStatisticsForFileAtPath:path
+                                                     forWorkspaceAtPath:workspacePath];
+    NSString* widestShortText = @"";
+
+    for (BBUFunctionStatistics* functionStatistic in functionStatistics) {
+        if (functionStatistic.shortText.length > widestShortText.length) {
+            widestShortText = functionStatistic.shortText;
+        }
+    }
+
+    return widestShortText;
+}
+
 #pragma mark -
 
 -(instancetype)initWithDictionary:(NSDictionary*)dictionary {
     self = [super init];
     if (self) {
-        self.functionSize = [dictionary[@"function_size"] unsignedIntegerValue];
-        self.lineNumber = [dictionary[@"line_number"] unsignedIntegerValue];
-        self.stackSize = [dictionary[@"stack_size"] unsignedIntegerValue];
+        self.lineNumber = [dictionary[@"line"] unsignedIntegerValue];
+        self.longText = dictionary[@"long_text"];
+        self.shortText = dictionary[@"short_text"];
 
         NSString* urlString = dictionary[@"url"];
         if (urlString) {
