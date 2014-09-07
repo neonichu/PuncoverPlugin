@@ -183,8 +183,7 @@ static BBUPuncoverPlugin *sharedPlugin;
                               linesToReplace:(id)a4
                             getParaRectBlock:rectBlock
 {
-    NSString* path = self.currentDocumentURL.path;
-    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path
+    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:self.currentDocumentURL.path
                                                          forWorkspaceAtPath:[self workspacePath]];
 
     [self lockFocus];
