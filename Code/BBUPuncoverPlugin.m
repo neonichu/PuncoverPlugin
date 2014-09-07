@@ -16,6 +16,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 @interface BBUPuncoverPlugin()
 
 @property (nonatomic, strong) NSBundle *bundle;
+@property (nonatomic, strong) NSTextView* popover;
 
 @end
 
@@ -31,7 +32,14 @@ static BBUPuncoverPlugin *sharedPlugin;
         dispatch_once(&onceToken, ^{
             sharedPlugin = [[self alloc] initWithBundle:plugin];
 
+            sharedPlugin.popover = [[NSTextView alloc] initWithFrame:NSZeroRect];
+            sharedPlugin.popover.wantsLayer = YES;
+            sharedPlugin.popover.layer.cornerRadius = 6.0;
+
             __block Class aClass = NSClassFromString(@"DVTTextSidebarView");
+            [self swizzleClass:aClass
+                      exchange:@selector(annotationAtSidebarPoint:)
+                          with:@selector(puncover_annotationAtSidebarPoint:)];
             [self swizzleClass:aClass
                       exchange:@selector(_drawLineNumbersInSidebarRect:foldedIndexes:count:linesToInvert:linesToReplace:getParaRectBlock:)
                           with:@selector(puncover_drawLineNumbersInSidebarRect:foldedIndexes:count:linesToInvert:linesToReplace:getParaRectBlock:)];
@@ -84,8 +92,10 @@ static BBUPuncoverPlugin *sharedPlugin;
 @property(nonatomic, readonly) NSURL* currentDocumentURL;
 @property(retain, nonatomic) NSFont *lineNumberFont;
 @property(copy, nonatomic) NSColor *lineNumberTextColor;
+@property(assign, nonatomic) double sidebarWidth;
 
 - (void)getParagraphRect:(CGRect *)a0 firstLineRect:(CGRect *)a1 forLineNumber:(NSUInteger)a2;
+- (NSUInteger)lineNumberForPoint:(CGPoint)a0;
 
 @end
 
@@ -95,8 +105,55 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 @dynamic lineNumberFont;
 @dynamic lineNumberTextColor;
+@dynamic sidebarWidth;
 
 #pragma mark -
+
+- (NSTextView *)sourceTextView
+{
+    return [[self superview] respondsToSelector:@selector(delegate)] ? (NSTextView *)[(id)[self superview] delegate] : nil;
+}
+
+- (id)puncover_annotationAtSidebarPoint:(CGPoint)p0
+{
+    id annotation = [self puncover_annotationAtSidebarPoint:p0];
+    NSTextView *popover = sharedPlugin.popover;
+
+    if ( !annotation && p0.x < self.sidebarWidth ) {
+        NSUInteger line = [self lineNumberForPoint:p0];
+        NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:self.currentDocumentURL.path
+                                                             forWorkspaceAtPath:[self workspacePath]];
+
+        for (BBUFunctionStatistics* stat in stats) {
+            if (stat.lineNumber == line) {
+                NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:stat.longText attributes:nil];
+
+                [[popover textStorage] setAttributedString:attributedString];
+
+                CGRect a0, a1;
+                [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:stat.lineNumber];
+
+                NSTextView *sourceTextView = [self sourceTextView];
+                NSFont *font = popover.font = sourceTextView.font;
+
+                CGFloat lineHeight = font.ascender + font.descender + font.leading;
+                CGFloat w = NSWidth(sourceTextView.frame);
+                CGFloat h = lineHeight * [popover.string componentsSeparatedByString:@"\n"].count;
+
+                popover.frame = NSMakeRect(NSWidth(self.frame)+1., a0.origin.y, w, h);
+
+                [self.scrollView addSubview:popover];
+                return annotation;
+            }
+        }
+    }
+    
+    if ( [popover superview] ) {
+        [popover removeFromSuperview];
+    }
+    
+    return annotation;
+}
 
 - (NSAttributedString*)puncover_attributedStringFromString:(NSString*)string {
     if (!self.lineNumberFont || !self.lineNumberTextColor) {
