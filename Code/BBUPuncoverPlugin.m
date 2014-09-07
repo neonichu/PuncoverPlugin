@@ -187,12 +187,16 @@ static BBUPuncoverPlugin *sharedPlugin;
     NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path
                                                          forWorkspaceAtPath:[self workspacePath]];
 
+    [self lockFocus];
+
     for (BBUFunctionStatistics* stat in stats) {
         NSUInteger lineNumber = stat.lineNumber;
         for (NSString* line in [stat.shortText componentsSeparatedByString:@"\n"]) {
             [self puncover_drawString:line atLine:lineNumber++];
         }
     }
+
+    [self unlockFocus];
 
     [self puncover_drawLineNumbersInSidebarRect:rect
                                  foldedIndexes:indexes
