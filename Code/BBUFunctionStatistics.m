@@ -39,6 +39,11 @@
     }
 
     path = [path stringByReplacingOccurrencesOfString:workspacePath withString:@""];
+
+    if (path.length < 1) {
+        return @[];
+    }
+
     path = [path substringFromIndex:1];
 
     NSDictionary* fileStatistics = [self fileStatisticsForWorkspaceAtPath:workspacePath];
