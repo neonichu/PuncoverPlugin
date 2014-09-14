@@ -33,6 +33,10 @@ static BBUPuncoverPlugin *sharedPlugin;
             sharedPlugin = [[self alloc] initWithBundle:plugin];
 
             sharedPlugin.popover = [[NSTextView alloc] initWithFrame:NSZeroRect];
+            sharedPlugin.popover.backgroundColor = [NSColor colorWithRed:254.0/255.0
+                                                                   green:253.0/255.0
+                                                                    blue:204.0/255.0
+                                                                   alpha:1.0];
             sharedPlugin.popover.wantsLayer = YES;
             sharedPlugin.popover.layer.cornerRadius = 6.0;
 
