@@ -1,4 +1,25 @@
-Xcode plugin for displaying code size information of [Pebble][1] applications.
+Xcode plugin for displaying information in the gutter.
+
+It will display JSON from *.gutter.json* in the current project's directory, example:
+
+```json
+"/some/file": [
+  {
+    "line": 23,
+    "long_text": "Some longer text in a tooltip when hovering over the line.",
+    "name": "main",
+    "short_text": "gutter text"
+  }
+]
+```
+
+see [this file](Resources/test.json) for more information. This enables the integration of abitrary tools and scripts into Xcode without the need to write yet another plugin.
+
+## Current applications
+
+- Show code size information of [Pebble][1] applications, using [puncover][2] - this also inspired the name of this plugin.
+
+- Show findings of [Faux Pas][3], using [this script][4] to convert the JSON.
 
 ## Installation
 
@@ -17,3 +38,6 @@ In any case, relaunch Xcode to load it.
 Follow [@NeoNacho](https://twitter.com/NeoNacho) to help me beat [@orta](https://twitter.com/orta) in followers count.
 
 [1]: https://getpebble.com
+[2]: https://github.com/HBehrens/puncover
+[3]: http://fauxpasapp.com
+[4]: https://gist.github.com/neonichu/b172f0afe5ceb58155c3
