@@ -90,6 +90,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 @interface NSRulerView (Puncover)
 
 @property(nonatomic, readonly) NSURL* currentDocumentURL;
+@property(nonatomic) BOOL drawsLineNumbers;
 @property(retain, nonatomic) NSFont *lineNumberFont;
 @property(copy, nonatomic) NSColor *lineNumberTextColor;
 @property(assign, nonatomic) double sidebarWidth;
@@ -103,6 +104,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 @implementation NSRulerView (Puncover)
 
+@dynamic drawsLineNumbers;
 @dynamic lineNumberFont;
 @dynamic lineNumberTextColor;
 @dynamic sidebarWidth;
@@ -207,6 +209,10 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 - (double)puncover_sidebarWidth {
     double originalWidth = [self puncover_sidebarWidth];
+
+    if (!self.drawsLineNumbers) {
+        return originalWidth;
+    }
 
     NSAttributedString* widestAttributedString = [self puncover_attributedStringFromString:[BBUFunctionStatistics widestShortTextForFileAtPath:self.currentDocumentURL.path forWorkspaceAtPath:[self workspacePath]]];
 
