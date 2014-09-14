@@ -3,6 +3,7 @@ Xcode plugin for displaying information in the gutter.
 It will display JSON from *.gutter.json* in the current project's directory, example:
 
 ```json
+{
 "/some/file": [
   {
     "line": 23,
@@ -11,6 +12,7 @@ It will display JSON from *.gutter.json* in the current project's directory, exa
     "short_text": "gutter text"
   }
 ]
+}
 ```
 
 see [this file](Resources/test.json) for more information. This enables the integration of abitrary tools and scripts into Xcode without the need to write yet another plugin.
