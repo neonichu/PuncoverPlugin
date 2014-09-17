@@ -43,7 +43,6 @@ static NSMutableDictionary* JSONLastModified;
 
     if (cachedData) {
         NSDate* lastModified = cachedData[kLastModified];
-        NSLog(@"%@ > %@", currentModified, lastModified);
         if ([lastModified compare:currentModified] != NSOrderedAscending) {
             return cachedData[kJSONData];
         }
