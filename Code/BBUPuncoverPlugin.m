@@ -132,6 +132,10 @@ static BBUPuncoverPlugin *sharedPlugin;
 
         for (BBUFunctionStatistics* stat in stats) {
             if (stat.lineNumber == line) {
+                if (stat.longText.length < 1) {
+                    return annotation;
+                }
+
                 NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:stat.longText attributes:nil];
 
                 [[popover textStorage] setAttributedString:attributedString];
