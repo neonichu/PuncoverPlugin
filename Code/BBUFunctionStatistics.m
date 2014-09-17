@@ -8,6 +8,11 @@
 
 #import "BBUFunctionStatistics.h"
 
+static NSString* const kLastModified    = @"LastModifiedKey";
+static NSString* const kJSONData        = @"JSONDataKey";
+
+static NSMutableDictionary* JSONLastModified;
+
 @interface BBUFunctionStatistics ()
 
 @property (nonatomic) NSUInteger lineNumber;
@@ -21,15 +26,38 @@
 
 @implementation BBUFunctionStatistics
 
++(void)load {
+    JSONLastModified = [@{} mutableCopy];
+}
+
 +(NSDictionary*)fileStatisticsForWorkspaceAtPath:(NSString*)workspacePath {
     NSString* filePath = [workspacePath stringByAppendingPathComponent:@".gutter.json"];
+    NSDictionary* attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil];
+    NSDate* currentModified = attrs[NSFileModificationDate];
+
+    if (!attrs) {
+        return nil;
+    }
+
+    NSDictionary* cachedData = JSONLastModified[filePath];
+
+    if (cachedData) {
+        NSDate* lastModified = cachedData[kLastModified];
+        NSLog(@"%@ > %@", currentModified, lastModified);
+        if ([lastModified compare:currentModified] != NSOrderedAscending) {
+            return cachedData[kJSONData];
+        }
+    }
+
     NSData* JSONData = [NSData dataWithContentsOfFile:filePath];
 
     if (!JSONData) {
         return nil;
     }
 
-    return [NSJSONSerialization JSONObjectWithData:JSONData options:0 error:nil];
+    NSDictionary* JSONDict = [NSJSONSerialization JSONObjectWithData:JSONData options:0 error:nil];
+    JSONLastModified[filePath] = @{ kLastModified: currentModified, kJSONData: JSONDict };
+    return JSONDict;
 }
 
 +(NSArray*)functionStatisticsForFileAtPath:(NSString*)path
