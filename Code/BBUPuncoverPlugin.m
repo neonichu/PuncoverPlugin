@@ -52,18 +52,6 @@ static BBUPuncoverPlugin *sharedPlugin;
             [self swizzleClass:aClass
                       exchange:@selector(sidebarWidth)
                           with:@selector(puncover_sidebarWidth)];
-
-#if 0
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                for (NSWindowController* controller in [objc_getClass("IDEWorkspaceWindowController") performSelector:@selector(workspaceWindowControllers)]) {
-                    id tabController = [controller performSelector:@selector(activeWorkspaceTabController)];
-                    [tabController performSelector:@selector(showUtilities)];
-                    //[tabController performSelector:@selector(addAssistantEditor:) withObject:nil];
-                    //[tabController performSelector:@selector(changeToAssistantLayout_BH:) withObject:nil];
-                    [tabController performSelector:@selector(assistantEditorsLayout)];
-                }
-            });
-#endif
         });
     }
 }
