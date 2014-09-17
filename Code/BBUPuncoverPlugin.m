@@ -16,7 +16,9 @@ static BBUPuncoverPlugin *sharedPlugin;
 @interface BBUPuncoverPlugin()
 
 @property (nonatomic, strong) NSBundle *bundle;
+@property (nonatomic, copy) NSString* currentDocumentPath;
 @property (nonatomic, strong) NSTextView* popover;
+@property (nonatomic, strong) NSDictionary* statsForCurrentDocument;
 
 @end
 
@@ -115,6 +117,25 @@ static BBUPuncoverPlugin *sharedPlugin;
 
 #pragma mark -
 
+- (NSDictionary*)functionStatistics {
+    NSString* path = self.currentDocumentURL.path;
+
+    if (![path isEqualToString:sharedPlugin.currentDocumentPath]) {
+        NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:path
+                                                             forWorkspaceAtPath:[self workspacePath]];
+
+        NSMutableDictionary* mutableStatsDictionary = [@{} mutableCopy];
+        for (BBUFunctionStatistics* stat in stats) {
+            mutableStatsDictionary[@(stat.lineNumber)] = stat;
+        }
+
+        sharedPlugin.currentDocumentPath = path;
+        sharedPlugin.statsForCurrentDocument = [mutableStatsDictionary copy];
+    }
+
+    return sharedPlugin.statsForCurrentDocument;
+}
+
 - (NSTextView *)sourceTextView
 {
     return [[self superview] respondsToSelector:@selector(delegate)] ? (NSTextView *)[(id)[self superview] delegate] : nil;
@@ -127,35 +148,31 @@ static BBUPuncoverPlugin *sharedPlugin;
 
     if ( !annotation && p0.x < self.sidebarWidth ) {
         NSUInteger line = [self lineNumberForPoint:p0];
-        NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:self.currentDocumentURL.path
-                                                             forWorkspaceAtPath:[self workspacePath]];
+        NSDictionary* statsDictionary = [self functionStatistics];
+        BBUFunctionStatistics* stat = statsDictionary[@(line)];
 
-        for (BBUFunctionStatistics* stat in stats) {
-            if (stat.lineNumber == line) {
-                if (stat.longText.length < 1) {
-                    return annotation;
-                }
-
-                NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:stat.longText attributes:nil];
-
-                [[popover textStorage] setAttributedString:attributedString];
-
-                CGRect a0, a1;
-                [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:stat.lineNumber];
-
-                NSTextView *sourceTextView = [self sourceTextView];
-                NSFont *font = popover.font = sourceTextView.font;
-
-                CGFloat lineHeight = font.ascender + font.descender + font.leading;
-                CGFloat w = NSWidth(sourceTextView.frame);
-                CGFloat h = lineHeight * [popover.string componentsSeparatedByString:@"\n"].count;
-
-                popover.frame = NSMakeRect(NSWidth(self.frame)+1., a0.origin.y, w, h);
-
-                [self.scrollView addSubview:popover];
-                return annotation;
-            }
+        if (stat.longText.length < 1) {
+            return annotation;
         }
+
+        NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:stat.longText attributes:nil];
+
+        [[popover textStorage] setAttributedString:attributedString];
+
+        CGRect a0, a1;
+        [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:stat.lineNumber];
+
+        NSTextView *sourceTextView = [self sourceTextView];
+        NSFont *font = popover.font = sourceTextView.font;
+
+        CGFloat lineHeight = font.ascender + font.descender + font.leading;
+        CGFloat w = NSWidth(sourceTextView.frame);
+        CGFloat h = lineHeight * [popover.string componentsSeparatedByString:@"\n"].count;
+
+        popover.frame = NSMakeRect(NSWidth(self.frame)+1., a0.origin.y, w, h);
+
+        [self.scrollView addSubview:popover];
+        return annotation;
     }
     
     if ( [popover superview] ) {
@@ -193,14 +210,15 @@ static BBUPuncoverPlugin *sharedPlugin;
                               linesToReplace:(id)a4
                             getParaRectBlock:rectBlock
 {
-    NSArray* stats = [BBUFunctionStatistics functionStatisticsForFileAtPath:self.currentDocumentURL.path
-                                                         forWorkspaceAtPath:[self workspacePath]];
+    NSDictionary* statsDictionary = [self functionStatistics];
 
     [self lockFocus];
 
-    for (BBUFunctionStatistics* stat in stats) {
-        NSUInteger lineNumber = stat.lineNumber;
-        for (NSString* line in [stat.shortText componentsSeparatedByString:@"\n"]) {
+    for (int i = 0; i < indexCount; i++) {
+        NSUInteger lineNumber = indexes[i];
+        NSString* shortText = [statsDictionary[@(lineNumber)] shortText];
+
+        for (NSString* line in [shortText componentsSeparatedByString:@"\n"]) {
             [self puncover_drawString:line atLine:lineNumber++];
         }
     }
