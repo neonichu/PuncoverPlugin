@@ -19,6 +19,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 @property (nonatomic, copy) NSString* currentDocumentPath;
 @property (nonatomic, strong) NSTextView* popover;
 @property (nonatomic, strong) NSDictionary* statsForCurrentDocument;
+@property (nonatomic, strong) NSAttributedString* widestAttributedStringForCurrentDocument;
 
 @end
 
@@ -119,6 +120,7 @@ static BBUPuncoverPlugin *sharedPlugin;
 
         sharedPlugin.currentDocumentPath = path;
         sharedPlugin.statsForCurrentDocument = [mutableStatsDictionary copy];
+        sharedPlugin.widestAttributedStringForCurrentDocument = [self puncover_attributedStringFromString:[BBUFunctionStatistics widestShortTextForFileAtPath:self.currentDocumentURL.path forWorkspaceAtPath:[self workspacePath]]];
     }
 
     return sharedPlugin.statsForCurrentDocument;
@@ -228,7 +230,9 @@ static BBUPuncoverPlugin *sharedPlugin;
         return originalWidth;
     }
 
-    NSAttributedString* widestAttributedString = [self puncover_attributedStringFromString:[BBUFunctionStatistics widestShortTextForFileAtPath:self.currentDocumentURL.path forWorkspaceAtPath:[self workspacePath]]];
+    [self functionStatistics];
+
+    NSAttributedString* widestAttributedString = sharedPlugin.widestAttributedStringForCurrentDocument;
 
     return MIN(100.0, [widestAttributedString size].width + originalWidth);
 }
