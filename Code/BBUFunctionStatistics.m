@@ -15,6 +15,7 @@ static NSMutableDictionary* JSONLastModified;
 
 @interface BBUFunctionStatistics ()
 
+@property (nonatomic) NSColor* backgroundColor;
 @property (nonatomic) NSUInteger lineNumber;
 @property (nonatomic) NSString* longText;
 @property (nonatomic) NSString* shortText;
@@ -28,6 +29,27 @@ static NSMutableDictionary* JSONLastModified;
 
 +(void)load {
     JSONLastModified = [@{} mutableCopy];
+}
+
++(NSColor*)colorWithHexColorString:(NSString*)inColorString {
+    if (!inColorString) {
+        return nil;
+    }
+
+    unsigned colorCode = 0;
+
+    NSScanner* scanner = [NSScanner scannerWithString:inColorString];
+    [scanner scanHexInt:&colorCode];
+
+    unsigned char redByte = (unsigned char)(colorCode >> 16);
+    unsigned char greenByte = (unsigned char)(colorCode >> 8);
+    unsigned char blueByte = (unsigned char)(colorCode);
+
+    return [NSColor
+            colorWithCalibratedRed:(CGFloat)redByte / 0xff
+            green:(CGFloat)greenByte / 0xff
+            blue:(CGFloat)blueByte / 0xff
+            alpha:1.0];
 }
 
 +(NSDictionary*)fileStatisticsForWorkspaceAtPath:(NSString*)workspacePath {
@@ -104,6 +126,7 @@ static NSMutableDictionary* JSONLastModified;
 -(instancetype)initWithDictionary:(NSDictionary*)dictionary {
     self = [super init];
     if (self) {
+        self.backgroundColor = [[self class] colorWithHexColorString:dictionary[@"background_color"]];
         self.lineNumber = [dictionary[@"line"] unsignedIntegerValue];
         self.longText = dictionary[@"long_text"];
         self.shortText = dictionary[@"short_text"];

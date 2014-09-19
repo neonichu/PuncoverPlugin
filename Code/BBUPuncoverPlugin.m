@@ -182,6 +182,18 @@ static BBUPuncoverPlugin *sharedPlugin;
     return [[NSAttributedString alloc] initWithString:string attributes:attributes];
 }
 
+- (void)puncover_drawBackground:(NSColor*)color atLine:(NSUInteger)lineNumber {
+    if (!color) {
+        return;
+    }
+
+    NSRect a0, a1;
+    [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:lineNumber];
+
+    [color set];
+    NSRectFill(a0);
+}
+
 - (void)puncover_drawString:(NSString*)string atLine:(NSUInteger)lineNumber {
     NSRect a0, a1;
     [self getParagraphRect:&a0 firstLineRect:&a1 forLineNumber:lineNumber];
@@ -206,9 +218,11 @@ static BBUPuncoverPlugin *sharedPlugin;
 
     for (int i = 0; i < indexCount; i++) {
         NSUInteger lineNumber = indexes[i];
+        NSColor* backgroundColor = [statsDictionary[@(lineNumber)] backgroundColor];
         NSString* shortText = [statsDictionary[@(lineNumber)] shortText];
 
         for (NSString* line in [shortText componentsSeparatedByString:@"\n"]) {
+            [self puncover_drawBackground:backgroundColor atLine:lineNumber];
             [self puncover_drawString:line atLine:lineNumber++];
         }
     }

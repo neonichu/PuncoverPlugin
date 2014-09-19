@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Boris Bügling. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
 @interface BBUFunctionStatistics : NSObject
 
+@property (nonatomic, readonly) NSColor* backgroundColor;
 @property (nonatomic, readonly) NSUInteger lineNumber;
 @property (nonatomic, readonly) NSString* longText;
 @property (nonatomic, readonly) NSString* shortText;
