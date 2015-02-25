@@ -20,7 +20,7 @@ see [this file](Resources/test.json) for more information. This enables the inte
 
 ## Current applications
 
-- Show code coverage information, generated with [slather][5]. If you already have it up, slather can generate a suitable *.gutter.json* by simply running:
+- Show code coverage information, generated with [slather][5]. If you already have set it up, slather can generate a suitable *.gutter.json* by simply running:
 
         $ slather coverage -g path/to/project.xcodeproj
 
