@@ -10,7 +10,7 @@ It will display JSON from *.gutter.json* in the current project's directory, exa
     "line": 23,
     "long_text": "Some longer text in a tooltip when hovering over the line.",
     "name": "main",
-    "short_text": "gutter text"
+    "short_text": "gutter text",
     "background_color":"0x35CC4B"
   }
 ] }
