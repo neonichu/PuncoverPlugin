@@ -22,7 +22,7 @@ see [this file](Resources/test.json) for more information. This enables the inte
 
 - Show code coverage information, generated with [slather][5]. If you already have it up, slather can generate a suitable *.gutter.json* by simply running:
 
-	$ slather coverage -g path/to/project.xcodeproj
+        $ slather coverage -g path/to/project.xcodeproj
 
 - Show code size information of [Pebble][1] applications, using [puncover][2] - this also inspired the name of this plugin.
 
