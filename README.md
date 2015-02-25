@@ -1,4 +1,4 @@
-Xcode plugin for displaying information in the gutter.
+# Xcode plugin for displaying information in the gutter.
 
 ![Screenshot of the plugin in action](screenshots/puncover-plugin.png)
 
