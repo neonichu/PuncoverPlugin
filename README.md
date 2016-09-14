@@ -1,5 +1,9 @@
 # Xcode plugin for displaying information in the gutter.
 
+![project deprecated](https://img.shields.io/badge/project%20status-deprecated-red.svg)
+
+This project is deprecated in favor of [Editor Extensions](https://developer.apple.com/videos/play/wwdc2016/414/) support in Xcode 8+.
+
 ![Screenshot of the plugin in action](screenshots/puncover-plugin.png)
 
 It will display JSON from *.gutter.json* in the current project's directory, example:
